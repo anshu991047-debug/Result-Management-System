@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #2d2d2d;
+            --accent: #3a86ff;
+            --accent-dark: #2667cc;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --border: #404040;
+            --card-bg: #252525;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--secondary);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent), #6ea4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--card-bg);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+
+        .user-info i {
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            padding: 30px 0;
+        }
+
+        .view {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card h2 i {
+            font-size: 1.4rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--secondary);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .login-container {
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .login-type-selector {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .login-type {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .login-type.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .login-type:not(.active):hover {
+            background-color: var(--border);
+        }
+
+        .marks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mark-item {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .mark-item .subject {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .mark-item .score {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.15);
+            border-left: 4px solid var(--success);
+            color: #a5d6a7;
+        }
+
+        .alert-danger {
+            background-color: rgba(244, 67, 54, 0.15);
+            border-left: 4px solid var(--danger);
+            color: #ef9a9a;
+        }
+
+        .alert-info {
+            background-color: rgba(58, 134, 255, 0.15);
+            border-left: 4px solid var(--accent);
+            color: #90caf9;
+        }
+
+        .logout-btn {
+            margin-left: auto;
+        }
+
+        footer {
+            background-color: var(--secondary);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .marks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Result Management System</h1>
+            </div>
+            <div class="user-info" id="userInfo">
+                <i class="fas fa-user"></i>
+                <span>Please login to continue</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Login View -->
+        <div class="view active" id="loginView">
+            <div class="login-container">
+                <div class="card">
+                    <h2><i class="fas fa-sign-in-alt"></i> System Login</h2>
+                    
+                    <div class="login-type-selector">
+                        <div class="login-type active" data-type="admin">Admin Login</div>
+                        <div class="login-type" data-type="student">Student Login</div>
+                    </div>
+                    
+                    <!-- Admin Login Form -->
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminUsername">Admin Username</label>
+                            <input type="text" id="adminUsername" class="form-control" placeholder="Enter admin username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Admin Password</label>
+                            <input type="password" id="adminPassword" class="form-control" placeholder="Enter admin password" required>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>Default admin credentials: username: <strong>admin</strong>, password: <strong>admin123</strong></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-unlock"></i> Login as Admin
+                        </button>
+                    </form>
+                    
+                    <!-- Student Login Form -->
+                    <form id="studentLoginForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="studentUsername">Student Username</label>
+                            <input type="text" id="studentUsername" class="form-control" placeholder="Enter your username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentPassword">Student Password</label>
+                            <input type="password" id="studentPassword" class="form-control" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-user-graduate"></i> Login as Student
+                        </button>
+                    </form>
+                    
+                    <div class="alert alert-info" style="margin-top: 20px;">
+                        <i class="fas fa-database"></i>
+                        <div>All data is stored locally in your browser. Clearing browser data will reset the system.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Dashboard View -->
+        <div class="view" id="adminView">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                    <button class="btn btn-secondary logout-btn" id="adminLogout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="showAddStudentForm">
+                        <i class="fas fa-user-plus"></i> Add New Student
+                    </button>
+                    <button class="btn btn-secondary" id="showManageStudents">
+                        <i class="fas fa-users"></i> Manage Students
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Add Student Form -->
+            <div class="card" id="addStudentCard">
+                <h2><i class="fas fa-user-plus"></i> Add New Student</h2>
+                <form id="addStudentForm">
+                    <div class="form-group">
+                        <label for="studentName">Student Full Name</label>
+                        <input type="text" id="studentName" class="form-control" placeholder="Enter student's full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" class="form-control" placeholder="Enter student ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentUsername">Username (for student login)</label>
+                        <input type="text" id="newStudentUsername" class="form-control" placeholder="Create username for student" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studentPassword">Password (for student login)</label>
+                        <input type="password" id="newStudentPassword" class="form-control" placeholder="Create password for student" required>
+                    </div>
+                    
+                    <h3 style="margin-top: 30px; color: var(--text-secondary);">Enter Marks (out of 100)</h3>
+                    
+                    <div class="marks-grid">
+                        <div class="form-group">
+                            <label for="maths">Mathematics</label>
+                            <input type="number" min="0" max="100" id="maths" class="form-control" placeholder="Maths marks" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="science">Science</label>
+                            <input type="number" min="0" max="100" id="science" class="form-control" placeholder="Science marks" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="english">English</label>
+                            <input type="number" min="0" max="100" id="english" class="form-control" placeholder="English marks" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="history">History</label>
+                            <input type="number" min="0" max="100" id="history" class="form-control" placeholder="History marks" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="computer">Computer Science</label>
+                            <input type="number" min="0" max="100" id="computer" class="form-control" placeholder="Computer marks" required>
+                        </div>
+                    </div>
+                    
+                    <div class="stats" style="border: none; padding: 0; margin-top: 10px;">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Marks</div>
+                            <div class="stat-value" id="totalMarksPreview">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Percentage</div>
+                            <div class="stat-value" id="percentagePreview">0%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">CGPA</div>
+                            <div class="stat-value" id="cgpaPreview">0.0</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" style="margin-top: 20px;">
+                        <i class="fas fa-save"></i> Add Student with Results
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Manage Students -->
+            <div class="card" id="manageStudentsCard" style="display: none;">
+                <h2><i class="fas fa-users"></i> Manage Students</h2>
+                
+                <div class="student-list">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>CGPA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Students will be populated here -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="empty-state" id="noStudentsMessage" style="display: none;">
+                        <i class="fas fa-user-slash"></i>
+                        <h3>No Students Found</h3>
+                        <p>Add students using the "Add New Student" button above.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="adminAlertContainer"></div>
+        </div>
+        
+        <!-- Student Dashboard View -->
+        <div class="view" id="studentView">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2><i class="fas fa-user-graduate"></i> Student Dashboard</h2>
+                    <button class="btn btn-secondary logout-btn" id="studentLogout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+                
+                <div id="studentWelcome">
+                    <h3>Welcome, <span id="studentNameDisplay"></span></h3>
+                    <p>Student ID: <strong id="studentIdDisplay"></strong></p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Academic Performance</h2>
+                
+                <div class="marks-grid" id="studentMarksGrid">
+                    <!-- Marks will be populated here -->
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Total Marks</div>
+                        <div class="stat-value" id="studentTotalMarks">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Percentage</div>
+                        <div class="stat-value" id="studentPercentage">0%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">CGPA</div>
+                        <div class="stat-value" id="studentCGPA">0.0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-info-circle"></i> Result Summary</h2>
+                <div id="studentPerformanceSummary">
+                    <p>Your overall performance is <strong id="performanceText">calculating...</strong></p>
+                    <p id="performanceDetails">Detailed analysis will appear here once marks are loaded.</p>
+                </div>
+            </div>
+            
+            <div id="studentAlertContainer"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Result Management System &copy; 2023 | Modern Black & Grey Theme</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Data stored locally in your browser</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize localStorage if not set
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default admin credentials if not exists
+            if (!localStorage.getItem('adminCredentials')) {
+                localStorage.setItem('adminCredentials', JSON.stringify({
+                    username: 'admin',
+                    password: 'admin123'
+                }));
+            }
+            
+            // Initialize students array if not exists
+            if (!localStorage.getItem('students')) {
+                localStorage.setItem('students', JSON.stringify([]));
+            }
+            
+            // Initialize current user if not exists
+            if (!localStorage.getItem('currentUser')) {
+                localStorage.setItem('currentUser', JSON.stringify(null));
+            }
+            
+            // Check if user is already logged in
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                if (currentUser.type === 'admin') {
+                    showAdminView();
+                } else if (currentUser.type === 'student') {
+                    showStudentView(currentUser.data);
+                }
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initialize mark preview calculations
+            setupMarkPreview();
+        });
+        
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Login type selector
+            document.querySelectorAll('.login-type').forEach(type => {
+                type.addEventListener('click', function() {
+                    document.querySelectorAll('.login-type').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (this.dataset.type === 'admin') {
+                        document.getElementById('adminLoginForm').style.display = 'block';
+                        document.getElementById('studentLoginForm').style.display = 'none';
+                    } else {
+                        document.getElementById('adminLoginForm').style.display = 'none';
+                        document.getElementById('studentLoginForm').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Admin login form
+            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('adminUsername').value;
+                const password = document.getElementById('adminPassword').value;
+                adminLogin(username, password);
+            });
+            
+            // Student login form
+            document.getElementById('studentLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('studentUsername').value;
+                const password = document.getElementById('studentPassword').value;
+                studentLogin(username, password);
+            });
+            
+            // Admin logout
+            document.getElementById('adminLogout').addEventListener('click', logout);
+            
+            // Student logout
+            document.getElementById('studentLogout').addEventListener('click', logout);
+            
+            // Show add student form
+            document.getElementById('showAddStudentForm').addEventListener('click', function() {
+                document.getElementById('addStudentCard').style.display = 'block';
+                document.getElementById('manageStudentsCard').style.display = 'none';
+            });
+            
+            // Show manage students
+            document.getElementById('showManageStudents').addEventListener('click', function() {
+                document.getElementById('addStudentCard').style.display = 'none';
+                document.getElementById('manageStudentsCard').style.display = 'block';
+                loadStudentsTable();
+            });
+            
+            // Add student form
+            document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewStudent();
+            });
+        }
+        
+        // Setup mark preview calculations
+        function setupMarkPreview() {
+            const markInputs = ['maths', 'science', 'english', 'history', 'computer'];
+            
+            markInputs.forEach(inputId => {
+                document.getElementById(inputId).addEventListener('input', updateMarkPreview);
+            });
+        }
+        
+        // Update mark preview
+        function updateMarkPreview() {
+            const maths = parseInt(document.getElementById('maths').value) || 0;
+            const science = parseInt(document.getElementById('science').value) || 0;
+            const english = parseInt(document.getElementById('english').value) || 0;
+            const history = parseInt(document.getElementById('history').value) || 0;
+            const computer = parseInt(document.getElementById('computer').value) || 0;
+            
+            const totalMarks = maths + science + english + history + computer;
+            const percentage = (totalMarks / 500) * 100;
+            const cgpa = percentage / 9.5; // Simple CGPA calculation
+            
+            document.getElementById('totalMarksPreview').textContent = totalMarks;
+            document.getElementById('percentagePreview').textContent = percentage.toFixed(2) + '%';
+            document.getElementById('cgpaPreview').textContent = cgpa.toFixed(2);
+        }
+        
+        // Admin login function
+        function adminLogin(username, password) {
+            const adminCredentials = JSON.parse(localStorage.getItem('adminCredentials'));
+            
+            if (username === adminCredentials.username && password === adminCredentials.password) {
+                // Set current user
+                localStorage.setItem('currentUser', JSON.stringify({
+                    type: 'admin',
+                    username: username
+                }));
+                
+                // Show admin view
+                showAdminView();
+                showAlert('adminAlertContainer', 'Login successful! Welcome to Admin Dashboard.', 'success');
+            } else {
+                showAlert('adminAlertContainer', 'Invalid admin credentials. Please try again.', 'danger');
+            }
+        }
+        
+        // Student login function
+        function studentLogin(username, password) {
+            const students = JSON.parse(localStorage.getItem('students'));
+            const student = students.find(s => s.username === username && s.password === password);
+            
+            if (student) {
+                // Set current user
+                localStorage.setItem('currentUser', JSON.stringify({
+                    type: 'student',
+                    data: student
+                }));
+                
+                // Show student view
+                showStudentView(student);
+                showAlert('studentAlertContainer', `Welcome ${student.name}!`, 'success');
+            } else {
+                showAlert('studentAlertContainer', 'Invalid username or password. Please try again.', 'danger');
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.setItem('currentUser', JSON.stringify(null));
+            showLoginView();
+        }
+        
+        // Show login view
+        function showLoginView() {
+            document.getElementById('loginView').classList.add('active');
+            document.getElementById('adminView').classList.remove('active');
+            document.getElementById('studentView').classList.remove('active');
+            
+            // Clear user info
+            document.getElementById('userInfo').innerHTML = '<i class="fas fa-user"></i><span>Please login to continue</span>';
+            
+            // Reset forms
+            document.getElementById('adminLoginForm').reset();
+            document.getElementById('studentLoginForm').reset();
+        }
+        
+        // Show admin view
+        function showAdminView() {
+            document.getElementById('loginView').classList.remove('active');
+            document.getElementById('adminView').classList.add('active');
+            document.getElementById('studentView').classList.remove('active');
+            
+            // Update user info
+            document.getElementById('userInfo').innerHTML = '<i class="fas fa-user-shield"></i><span>Logged in as Admin</span>';
+            
+            // Show add student form by default
+            document.getElementById('addStudentCard').style.display = 'block';
+            document.getElementById('manageStudentsCard').style.display = 'none';
+            
+            // Reset add student form
+            document.getElementById('addStudentForm').reset();
+            updateMarkPreview();
+        }
+        
+        // Show student view
+        function showStudentView(student) {
+            document.getElementById('loginView').classList.remove('active');
+            document.getElementById('adminView').classList.remove('active');
+            document.getElementById('studentView').classList.add('active');
+            
+            // Update user info
+            document.getElementById('userInfo').innerHTML = `<i class="fas fa-user-graduate"></i><span>Logged in as ${student.name}</span>`;
+            
+            // Update student info
+            document.getElementById('studentNameDisplay').textContent = student.name;
+            document.getElementById('studentIdDisplay').textContent = student.id;
+            
+            // Display student marks
+            displayStudentMarks(student);
+        }
+        
+        // Add new student
+        function addNewStudent() {
+            const name = document.getElementById('studentName').value;
+            const id = document.getElementById('studentId').value;
+            const username = document.getElementById('newStudentUsername').value;
+            const password = document.getElementById('newStudentPassword').value;
+            
+            const maths = parseInt(document.getElementById('maths').value) || 0;
+            const science = parseInt(document.getElementById('science').value) || 0;
+            const english = parseInt(document.getElementById('english').value) || 0;
+            const history = parseInt(document.getElementById('history').value) || 0;
+            const computer = parseInt(document.getElementById('computer').value) || 0;
+            
+            const totalMarks = maths + science + english + history + computer;
+            const percentage = (totalMarks / 500) * 100;
+            const cgpa = percentage / 9.5;
+            
+            // Get existing students
+            const students = JSON.parse(localStorage.getItem('students'));
+            
+            // Check if student ID already exists
+            if (students.some(s => s.id === id)) {
+                showAlert('adminAlertContainer', `Student with ID ${id} already exists.`, 'danger');
+                return;
+            }
+            
+            // Check if username already exists
+            if (students.some(s => s.username === username)) {
+                showAlert('adminAlertContainer', `Username ${username} is already taken. Please choose another.`, 'danger');
+                return;
+            }
+            
+            // Create new student object
+            const newStudent = {
+                id: id,
+                name: name,
+                username: username,
+                password: password,
+                marks: {
+                    maths: maths,
+                    science: science,
+                    english: english,
+                    history: history,
+                    computer: computer
+                },
+                total: totalMarks,
+                percentage: percentage,
+                cgpa: cgpa
+            };
+            
+            // Add to students array
+            students.push(newStudent);
+            
+            // Save to localStorage
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            // Show success message
+            showAlert('adminAlertContainer', `Student ${name} added successfully!`, 'success');
+            
+            // Reset form
+            document.getElementById('addStudentForm').reset();
+            updateMarkPreview();
+            
+            // Reload students table if visible
+            if (document.getElementById('manageStudentsCard').style.display !== 'none') {
+                loadStudentsTable();
+            }
+        }
+        
+        // Load students table
+        function loadStudentsTable() {
+            const students = JSON.parse(localStorage.getItem('students'));
+            const tableBody = document.getElementById('studentsTableBody');
+            const noStudentsMessage = document.getElementById('noStudentsMessage');
+            
+            // Clear table
+            tableBody.innerHTML = '';
+            
+            if (students.length === 0) {
+                noStudentsMessage.style.display = 'block';
+                return;
+            }
+            
+            noStudentsMessage.style.display = 'none';
+            
+            // Populate table
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.username}</td>
+                    <td>${student.total}</td>
+                    <td>${student.percentage.toFixed(2)}%</td>
+                    <td>${student.cgpa.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small delete-student" data-index="${index}">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-student').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    deleteStudent(index);
+                });
+            });
+        }
+        
+        // Delete student
+        function deleteStudent(index) {
+            const students = JSON.parse(localStorage.getItem('students'));
+            
+            if (confirm(`Are you sure you want to delete ${students[index].name}?`)) {
+                const deletedStudent = students.splice(index, 1)[0];
+                localStorage.setItem('students', JSON.stringify(students));
+                
+                showAlert('adminAlertContainer', `Student ${deletedStudent.name} removed successfully.`, 'success');
+                loadStudentsTable();
+            }
+        }
+        
+        // Display student marks
+        function displayStudentMarks(student) {
+            const marksGrid = document.getElementById('studentMarksGrid');
+            const marks = student.marks;
+            
+            marksGrid.innerHTML = '';
+            
+            // Create mark items for each subject
+            for (const subject in marks) {
+                const markItem = document.createElement('div');
+                markItem.className = 'mark-item';
+                
+                const subjectName = subject.charAt(0).toUpperCase() + subject.slice(1);
+                const score = marks[subject];
+                
+                markItem.innerHTML = `
+                    <div class="subject">${subjectName}</div>
+                    <div class="score">${score}</div>
+                    <div class="grade">Grade: ${calculateGrade(score)}</div>
+                `;
+                
+                marksGrid.appendChild(markItem);
+            }
+            
+            // Update stats
+            document.getElementById('studentTotalMarks').textContent = student.total;
+            document.getElementById('studentPercentage').textContent = student.percentage.toFixed(2) + '%';
+            document.getElementById('studentCGPA').textContent = student.cgpa.toFixed(2);
+            
+            // Update performance text
+            const performanceText = document.getElementById('performanceText');
+            const performanceDetails = document.getElementById('performanceDetails');
+            
+            let performance = '';
+            let details = '';
+            
+            if (student.percentage >= 80) {
+                performance = 'Excellent';
+                details = 'You have scored exceptionally well. Keep up the good work!';
+            } else if (student.percentage >= 60) {
+                performance = 'Good';
+                details = 'You have performed well. There is room for improvement in some subjects.';
+            } else if (student.percentage >= 40) {
+                performance = 'Average';
+                details = 'You have passed, but need to work harder to improve your scores.';
+            } else {
+                performance = 'Needs Improvement';
+                details = 'You need to focus more on your studies to improve your performance.';
+            }
+            
+            performanceText.textContent = performance;
+            performanceDetails.textContent = details;
+        }
+        
+        // Calculate grade based on marks
+        function calculateGrade(marks) {
+            if (marks >= 90) return 'A+';
+            if (marks >= 80) return 'A';
+            if (marks >= 70) return 'B+';
+            if (marks >= 60) return 'B';
+            if (marks >= 50) return 'C';
+            if (marks >= 40) return 'D';
+            return 'F';
+        }
+        
+        // Show alert message
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            
+            // Clear previous alerts
+            container.innerHTML = '';
+            
+            // Create alert element
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            
+            let icon = '';
+            if (type === 'success') icon = 'fa-check-circle';
+            else if (type === 'danger') icon = 'fa-exclamation-circle';
+            else icon = 'fa-info-circle';
+            
+            alert.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div>${message}</div>
+            `;
+            
+            container.appendChild(alert);
+            
+            // Auto remove alert after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
